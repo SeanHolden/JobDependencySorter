@@ -36,15 +36,29 @@ describe Job do
   end
 
   describe "sort method" do
-    it "should sort jobs correctly" do
+    it "should sort jobs correctly (test 1)" do
       job = Job.new("a =>,b => c,c => f,d => a,e => b,f =>")
       expect( job.sort ).to eq %w( f c b e a d )
     end
 
-    it "should return error when a job is trying to depend on itself" do
+    it "should sort jobs correctly (test 2)" do
+      job = Job.new("a =>,b => c, c=>")
+      expect( job.sort ).to eq %w( c b a)
+    end
+
+    it "returns error when a job is trying to depend on itself" do
       job = Job.new("a =>,b=>,c=>c")
-      expect{ job.sort }.to raise_error(StandardError, "Jobs can't depend on themselves")
+      expect{ job.sort }.to raise_error(StandardError, "Jobs can't depend on themselves.")
+    end
+
+    it "returns error when a job is trying to have circular dependencies" do
+      job = Job.new("a =>,b => c,c => f,d => a,e =>,f => b")
+      expect{ job.sort }.to raise_error(StandardError, "Can't have circular dependencies.")
     end
   end
+
+
+
+
 
 end

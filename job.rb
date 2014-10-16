@@ -12,12 +12,12 @@ class Job
       split_job = job.split('=>')
       left = split_job[0].strip
       right = split_job[1].nil? ? nil : split_job[1].strip
-      raise StandardError.new, "Jobs can't depend on themselves" if left == right
+      raise StandardError.new, "Jobs can't depend on themselves." if left == right
       if right.nil?
         output << left unless output.include? left
       else
         if output.include?(left) && output.include?(right)
-          raise StandardError.new, "Can't have circular dependencies" 
+          raise StandardError.new, "Can't have circular dependencies." 
         elsif output.include?(left) && !output.include?(right)
           output.insert(output.index(left),right)
         elsif !output.include?(left) && output.include?(right)

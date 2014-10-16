@@ -36,11 +36,14 @@ describe Job do
   end
 
   describe "sort method" do
-    context "iteration 1" do
-      it "returns an array of items that don't need to be in any order" do
-        job = Job.new("a =>,b => c,c => f,d => a,e => b,f =>")
-        expect(job.sort).to eq ['a','f']
-      end
+    it "should sort jobs correctly" do
+      job = Job.new("a =>,b => c,c => f,d => a,e => b,f =>")
+      expect( job.sort ).to eq %w( f c b e a d )
+    end
+
+    it "should return error when a job is trying to depend on itself" do
+      job = Job.new("a =>,b=>,c=>c")
+      expect{ job.sort }.to raise_error(StandardError, "Jobs can't depend on themselves")
     end
   end
 

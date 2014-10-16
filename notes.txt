@@ -1,0 +1,16 @@
+All Scenarios of left and right in list
+
+* If left is not already in array, and right is not already in the array:
+  => prepend left, then prepend right.
+
+* If left is in the array, and right is not already in the array:
+  => find index of left, place right BEFORE it.
+
+* If left is not in the array, and right is in the array:
+  => find index of right, place left AFTER it
+
+* If left is in the array, and right is in the array:
+  => error: ...
+
+
+

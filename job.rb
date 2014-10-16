@@ -6,7 +6,17 @@ class Job
   end
 
   def sort
-    unsorted_string
+    jobs = unsorted_string.split(',')
+    output = []
+    jobs.each do |job|
+      split_job = job.split('=>')
+      left = split_job[0].strip
+      right = split_job[1].nil? ? nil : split_job[1].strip
+      if right.nil?
+        output << left
+      end
+    end
+    output
   end
 
   private

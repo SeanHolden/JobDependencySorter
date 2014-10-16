@@ -24,15 +24,22 @@ describe Job do
         .to raise_error(ArgumentError, error_message)
       end
     end
-  end
 
-  describe "sort method" do
     context "no argument is entered" do
       let(:error_message) { "Error: An argument must be entered." }
 
       it "returns appropriate message if nothing is entered as an argument" do
         expect{ Job.new() }
         .to raise_error(ArgumentError, error_message)
+      end
+    end
+  end
+
+  describe "sort method" do
+    context "iteration 1" do
+      it "returns an array of items that don't need to be in any order" do
+        job = Job.new("a =>,b => c,c => f,d => a,e => b,f =>")
+        expect(job.sort).to eq ['a','f']
       end
     end
   end

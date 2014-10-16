@@ -1,21 +1,39 @@
 require './spec/spec_helper'
 
 describe Job do
-  let(:job) { Job.new }
   let(:error_message) { "Error: Input must be a comma separated string." }
   let(:no_argument_message) { "Note: An argument must be entered." }
 
-  context "sort method" do
+  describe "sort method" do
 
-    it "returns appropriate error message if non-string argument is entered" do
-      # Testing for integer, array and hash input
-      expect( job.sort(123) ).to eq error_message
-      expect( job.sort(['test','array']) ).to eq error_message
-      expect( job.sort({:test=>'hash'}) ).to eq error_message
+    context "non-string argument is entered" do
+
+      let(:error_message) { "Error: Input must be a comma separated string." }
+      it "integer argument returns correct error" do
+        expect{ Job.new(123) }
+        .to raise_error(ArgumentError,error_message )
+      end
+
+      it "array argument returns correct error" do
+        expect{ Job.new(['test','array']) }
+        .to raise_error(ArgumentError, error_message)
+      end
+
+      it "hash argument returns correct error" do
+        expect{ Job.new({:test=>'hash'}) }
+        .to raise_error(ArgumentError, error_message)
+      end
+
     end
 
-    it "returns appropriate message if nothing is entered as an argument" do
-      expect( job.sort ).to eq no_argument_message
+    context "no argument is entered" do
+
+      let(:error_message) { "Error: An argument must be entered." }
+      it "returns appropriate message if nothing is entered as an argument" do
+        expect{ Job.new() }
+        .to raise_error(ArgumentError, error_message)
+      end
+
     end
 
   end

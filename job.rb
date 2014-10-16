@@ -1,28 +1,37 @@
 class Job
-  def sort(input='')
-    return error_message( validate(input) ) unless validate(input) == 'valid'
+
+  def initialize(input='')
+    error_message unless check(input) == 'valid'
+    self.unsorted_string = input
   end
 
+  def sort
+    unsorted_string
+  end
 
   private
 
-  def validate(input)
+  def unsorted_string=(input)
+    @unsorted_string ||= input
+  end
+
+  def unsorted_string
+    @unsorted_string
+  end
+
+  def check(input)
     if !input.kind_of? String
-      "non_string"
+      @input_invalid = "Error: Input must be a comma separated string."
     elsif input.empty?
-      "no_argument"
+      @input_invalid = "Error: An argument must be entered."
     else
       "valid"
     end
   end
 
-  # Method to simply return error messsages
-  def error_message(error_type)
-    case error_type
-    when 'non_string'
-      "Error: Input must be a comma separated string."
-    when 'no_argument'
-      "Note: An argument must be entered."
-    end
+  def error_message  
+    raise ArgumentError.new, @input_invalid
   end
+
 end
+

@@ -69,3 +69,6 @@ class Job
   end
 
 end
+
+
+puts Job.new("a=>,b=>e,c=>f,d=>a,e=>c,f=>").sort.to_s

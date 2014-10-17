@@ -40,12 +40,12 @@ describe Job do
     let(:dependency_rules) { [['b','e'],['c','f'],['d','a'],['e','c']] }
     let(:job) { Job.new('a,b,c') } #<- the argument doesn't matter for this method
 
-    it "returns a true or false value after checking if array meets all required dependencies" do
+    it "returns false value if array does not meet all required dependencies" do
       job_order = %w(a b c d e f)
       expect( job.send(:is_valid?, job_order, dependency_rules) ).to eq false
     end
 
-    it "returns a true or false value after checking if array meets all required dependencies" do
+    it "returns true if array meets all required dependencies" do
       job_order = %w(a f c e b d)
       expect( job.send(:is_valid?, job_order, dependency_rules) ).to eq true
     end

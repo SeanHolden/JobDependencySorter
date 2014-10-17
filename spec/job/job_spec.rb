@@ -35,6 +35,22 @@ describe Job do
     end
   end
 
+  describe "is_valid? method" do
+    # Using send to test a private method as I feel it is necessary to test this.
+    let(:dependency_rules) { [['b','e'],['c','f'],['d','a'],['e','c']] }
+    let(:job) { Job.new('a,b,c') } #<- the argument doesn't matter for this method
+
+    it "returns a true or false value after checking if array meets all required dependencies" do
+      job_order = %w(a b c d e f)
+      expect( job.send(:is_valid?, job_order, dependency_rules) ).to eq false
+    end
+
+    it "returns a true or false value after checking if array meets all required dependencies" do
+      job_order = %w(a f c e b d)
+      expect( job.send(:is_valid?, job_order, dependency_rules) ).to eq true
+    end
+  end
+
   describe "sort method" do
     it "should sort jobs correctly (test 1)" do
       pending
@@ -63,17 +79,17 @@ describe Job do
       job = Job.new("a=>,b=>e,c=>f,d=>a,e=>c,f=>")
       expect( job.sort ).to eq %w( a d f c e b )
     end
+  end
 
-    context "errors" do
-      it "returns error when a job is trying to depend on itself" do
-        pending
-        fail
-      end
+  context "errors" do
+    it "returns error when a job is trying to depend on itself" do
+      pending
+      fail
+    end
 
-      it "returns error when a job is trying to have circular dependencies" do
-        pending
-        fail
-      end
+    it "returns error when a job is trying to have circular dependencies" do
+      pending
+      fail
     end
   end
 

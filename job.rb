@@ -8,7 +8,7 @@ class Job
 
   def sort
     jobs = unsorted_string.split(',')
-    sorted_jobs, job_pairs = [],[],[]
+    sorted_jobs, dependency_rules = [],[]
     jobs.each do |job|
       job_split = job.split('=>')
       left,right = job_split[0],job_split[1]
@@ -16,15 +16,18 @@ class Job
       sorted_jobs << left
       unless right.nil?
         right = right.strip 
-        job_pairs << [left,right]
+        dependency_rules << [left,right]
       end
     end
-    job_pairs.each do |job|
-      left = job[0]
-      right = job[1]
-      if sorted_jobs.index(right) > sorted_jobs.index(left)
-        sorted_jobs.delete(right)
-        sorted_jobs.insert(sorted_jobs.index(left),right)
+
+    until is_valid?(sorted_jobs,dependency_rules)
+      dependency_rules.each do |job|
+        left = job[0]
+        right = job[1]
+        if sorted_jobs.index(right) > sorted_jobs.index(left)
+          sorted_jobs.delete(right)
+          sorted_jobs.insert(sorted_jobs.index(left),right)
+        end
       end
     end
 
@@ -32,6 +35,16 @@ class Job
   end
 
   private
+
+  def is_valid?(job_order,dependency_rules)
+    rules_passed = 0
+    dependency_rules.each do |pair|
+      if job_order.index(pair[1]) < job_order.index(pair[0])
+        rules_passed = rules_passed + 1
+      end
+    end
+    rules_passed == dependency_rules.length
+  end
 
   def unsorted_string=(input)
     @unsorted_string ||= input

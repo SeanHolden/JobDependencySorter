@@ -1,20 +1,4 @@
-All Scenarios of left and right in list
-
-* If left is not already in array, and right is not already in the array:
-  => prepend left, then prepend right.
-
-* If left is in the array, and right is not already in the array:
-  => find index of left, place right BEFORE it.
-
-* If left is not in the array, and right is in the array:
-  => find index of right, place left AFTER it
-
-* If left is in the array, and right is in the array:
-  => error: ...
-
-
-
-Attempt at algorithm...
+Attempt at an algorithm...
 
 a=>
 b=>e
@@ -43,4 +27,48 @@ a f c e b d
 # is a before d? yes
 # is c before e? yes
 # complete!
+
+
+#####################################################################
+
+
+Plan to find circular dependency...
+
+Theory: when counter is 3, circular dependency is found
+
+ITEM1=(b => c)
+ITEM2=(c => f)
+ITEM3=(d => a)
+ITEM4=(f => b)
+
+ITEM1
+check each item to see if c appears on the left....it does, so counter = 1 and now checking (c=>f)
+check each item to see if f appears on the left....it does, so counter = 2 and now checking (f=>b)
+check each item to see if b appears on the left....it does, so counter = 3 and circular dependency found
+
+
+####
+
+ITEM1=(b => c)
+ITEM2=(c => f)
+ITEM3=(d => a)
+ITEM4=(e => b)
+
+ITEM1
+check each item to see if c appears on the left... it does, so counter = 1 and now checking (c=>f)
+check each item to see if f appears on the left....it doesn't, so end loop for this item
+
+ITEM2
+check each item to see if f appears on the left....it doesn't, so end loop for this item
+
+ITEM3
+check each item to see if a appears on the left....it doesn't, so end loop for this item
+
+ITEM4
+check each item to see if b appears on the left... it does, so counter = 1 and now checking (b=>c)
+check each item to see if c appears on the left... it does, so counter = 2 and now checking (c=>f)
+check each item to see if f appears on the left....it doesn't, so end loop for this item
+
+END
+
 

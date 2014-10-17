@@ -64,8 +64,8 @@ describe Job do
     end
 
     it "returns error when a job is trying to have circular dependencies" do
-      pending
-      fail
+      expect{ Job.new("a=>,b=>c,c=>f,d=>a,e=>,f=>b") }
+      .to raise_error(StandardError, "Error: Jobs can’t depend on themselves.")
     end
   end
 

@@ -52,6 +52,20 @@ class Job
   end
 
   def validate_circular_dependencies
+    @dependency_rules.each do |rule|
+      counter = 0
+      right = rule[1]
+      @dependency_rules.each do |r|
+        left = r[0]
+        if right == left
+          counter = counter + 1
+          right = r[1]
+        end
+        if counter == 3
+          raise StandardError.new, "Error: Jobs can’t have circular dependencies."
+        end
+      end
+    end
   end
 
   def format_string

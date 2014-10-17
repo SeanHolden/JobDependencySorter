@@ -14,3 +14,33 @@ All Scenarios of left and right in list
 
 
 
+Attempt at algorithm...
+
+a=>
+b=>e
+c=>f
+d=>a
+e=>c
+f=>
+
+a b c d e f
+# is e before b? no... so place e before b
+a e b c d f
+# is f before c? no.. so place f before c
+a e b f c d
+# is a before d? yes
+# is c before e? no... so place c before e
+a c e b f d
+# (loop again)
+# is e before b? yes
+# is f before c? no... so place f before c
+a f c e b d
+# is a before d? yes
+# is c before e? yes
+# (loop again)
+# is e before b? yes
+# is f before c? yes
+# is a before d? yes
+# is c before e? yes
+# complete!
+

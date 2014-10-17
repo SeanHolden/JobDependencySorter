@@ -5,30 +5,30 @@ class Job
     self.unsorted_string = input
   end
 
+
   def sort
     jobs = unsorted_string.split(',')
-    output = []
+    sorted_jobs, job_pairs = [],[],[]
     jobs.each do |job|
-      split_job = job.split('=>')
-      left = split_job[0].strip
-      right = split_job[1].nil? ? nil : split_job[1].strip
-      raise StandardError.new, "Jobs can't depend on themselves." if left == right
-      if right.nil?
-        output << left unless output.include? left
-      else
-        if output.include?(left) && output.include?(right)
-          raise StandardError.new, "Can't have circular dependencies." 
-        elsif output.include?(left) && !output.include?(right)
-          output.insert(output.index(left),right)
-        elsif !output.include?(left) && output.include?(right)
-          output.insert(output.index(right)+1,left)
-        else
-          output.unshift left
-          output.unshift right
-        end
+      job_split = job.split('=>')
+      left,right = job_split[0],job_split[1]
+      left = left.strip
+      sorted_jobs << left
+      unless right.nil?
+        right = right.strip 
+        job_pairs << [left,right]
       end
     end
-    output
+    job_pairs.each do |job|
+      left = job[0]
+      right = job[1]
+      if sorted_jobs.index(right) > sorted_jobs.index(left)
+        sorted_jobs.delete(right)
+        sorted_jobs.insert(sorted_jobs.index(left),right)
+      end
+    end
+
+    sorted_jobs
   end
 
   private
@@ -56,10 +56,3 @@ class Job
   end
 
 end
-
-
-
-
-
-
-

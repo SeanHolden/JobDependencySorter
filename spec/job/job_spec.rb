@@ -81,12 +81,17 @@ describe Job do
       expect( job.sort ).to eq %w( d b a g c f e )
     end
 
-    it "sorts jobs into correct order (test 5 - the big one)" do
+    it "sorts jobs into correct order (test 5)" do
+      job = Job.new("a=>j,b=>i,c=>h,d=>g,e=>f,f=>g,g=>a,h=>b,i=>e,j=>")
+      expect( job.sort ).to eq %w( j a g f e i b h c d )
+    end
+
+    it "sorts jobs into correct order (test 6 - the big one)" do
       job = Job.new("a=>b,b=>d,c=>g,d=>,e=>f,f=>,g=>a,h=>i,i=>a,j=>c,k=>b,l=>f,m=>o,n=>,o=>,p=>e")
       expect( job.sort ).to eq %w( d b a g c f e i h j k l o m n p )
     end
 
-    it "sorts jobs into correct order (test 6 - the whole alphabet)" do
+    it "sorts jobs into correct order (test 7 - the whole alphabet)" do
       job = Job.new("a=>x,b=>o,c=>h,d=>x,e=>z,f=>d,g=>h,h=>k,i=>v,j=>g,k=>m,l=>a,m=>,n=>x,o=>q,p=>w,q=>g,r=>o,s=>u,t=>n,u=>c,v=>w,w=>,x=>,y=>d,z=>x")
       expect( job.sort ).to eq %w( x a m k h g q o b c d z e f w v i j l n p r u s t y )
     end

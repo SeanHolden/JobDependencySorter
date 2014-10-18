@@ -5,8 +5,10 @@
 Example of use:
 
 ```ruby
+require './job'
+
 job = Job.new("a=>j,b=>i,c=>h,d=>g,e=>f,f=>g,g=>a,h=>b,i=>e,j=>")
-job.sort
+puts job.sort
 ```
 
 Output
@@ -33,7 +35,13 @@ j =>
 ```
 
 ```ruby
+require './job'
+
 f = File.read('test.txt')
 job = Job.new(f)
-job.sort
+puts job.sort
 ```
+
+---
+
+Run `example.rb` to see a quick example of how it works.

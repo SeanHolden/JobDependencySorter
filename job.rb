@@ -1,18 +1,25 @@
-class Job
+require './validations'
+include Validations::CustomErrors
 
+class Job
+  include Validations
+
+  # Ensure all exceptions are handled before any other methods can
+  # be called
   def initialize(input='')
     @unsorted_string = input
-    validate_input # check input is non empty string
-    format_string # format into processible arrays 
+    validate_input
+    format_string
     validate_self_dependencies
     validate_circular_dependencies
   end
 
+  # Sorts the list into the correct order using the rules that
+  # are input by the user.
   def sort
     until order_is_valid? do
       @dependency_rules.each do |job|
-        left = job[0]
-        right = job[1]
+        left, right = job[0], job[1]
         if @sorted_jobs.index(right) > @sorted_jobs.index(left)
           @sorted_jobs.delete(right)
           @sorted_jobs.insert(@sorted_jobs.index(left),right)
@@ -24,50 +31,7 @@ class Job
 
   private
 
-  def order_is_valid?
-    rules_passed = 0
-    @dependency_rules.each do |pair|
-      # If right is before left, this rule passes.
-      if @sorted_jobs.index(pair[1]) < @sorted_jobs.index(pair[0])
-        rules_passed = rules_passed + 1
-      end
-    end
-    rules_passed == @dependency_rules.length
-  end
-
-  def validate_input
-    if !@unsorted_string.kind_of? String
-      raise ArgumentError.new, "Error: Input must be a comma separated string."
-    elsif @unsorted_string.empty?
-      raise ArgumentError.new, "Error: An argument must be entered."
-    end
-  end
-
-  def validate_self_dependencies
-    @dependency_rules.each do |rule|
-      if rule[0] == rule[1]
-        raise StandardError.new, "Error: Jobs can’t depend on themselves."
-      end
-    end
-  end
-
-  def validate_circular_dependencies
-    @dependency_rules.each do |rule|
-      counter = 0
-      right = rule[1]
-      @dependency_rules.each do |r|
-        left = r[0]
-        if right == left
-          counter = counter + 1
-          right = r[1]
-        end
-        if counter == 3
-          raise StandardError.new, "Error: Jobs can’t have circular dependencies."
-        end
-      end
-    end
-  end
-
+  # Take the input string and format into processable arrays.
   def format_string
     jobs = @unsorted_string.split(',')
     @sorted_jobs, @dependency_rules = [],[]
@@ -84,4 +48,6 @@ class Job
   end
 
 end
+
+
 

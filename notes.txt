@@ -72,3 +72,11 @@ check each item to see if f appears on the left....it doesn't, so end loop for t
 END
 
 
+#####
+
+THEORY 2 on circular dependencies after I have found that theory 1 is flawed (not always a 3 way circular dependency)
+
+Similar to theory above, but no counter...
+Instead loop through and add each item (pair) to a list.
+If the right hand side value appears on the left somewhere else, add that pair to the list too.
+Keep checking this list to see if any right hand side value also appears on the left. If so... circular dependency!

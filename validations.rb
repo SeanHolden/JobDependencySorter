@@ -15,12 +15,10 @@ module Validations
   def order_is_valid?
     rules_passed = 0
     @dependency_rules.each do |pair|
-      # If right is before left in the order, this rule passes.
       if @sorted_jobs.index(pair[1]) < @sorted_jobs.index(pair[0])
         rules_passed = rules_passed + 1
       end
     end
-    # Did we get a full house of passes?
     rules_passed == @dependency_rules.length
   end
 
@@ -38,24 +36,26 @@ module Validations
   # As the title suggests. Checks for circular dependencies and raises error if true.
   # How it works: for each "pair" of dependency rules, loop through all the dependency rules
   # and check if the one on the right appears anywhere on the left. If so check that one
-  # in the same manner. If three checks return true, then circular dependency is found.
+  # in the same manner. Keep adding these to a list. If, in our list, the item on the right
+  # appears on the left of another item... then it is a circular dependency.
   def validate_circular_dependencies
     @dependency_rules.each do |rule|
-      counter = 0
       right = rule[1]
+      culprits=''
       @dependency_rules.each do |r|
-        left = r[0]
-        if right == left
-          counter = counter + 1
+        appears_on_left = r[0]
+        if right == appears_on_left
           right = r[1]
+          culprits+="#{r[0]}=>#{r[1]};"
         end
-        if counter == 3
-          raise CircularDependency.new, "Error: Jobs can’t have circular dependencies."
+        if culprits.include?("=>#{right}") && culprits.include?("#{right}=>")
+          raise CircularDependency.new, "Error: Jobs can’t have circular dependencies. (#{culprits})"
         end
       end
     end
   end
 
+  # Checking that left hand side value does not equal right hand side value.
   def validate_self_dependencies
     @dependency_rules.each do |rule|
       if rule[0] == rule[1]

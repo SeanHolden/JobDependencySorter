@@ -80,3 +80,60 @@ Similar to theory above, but no counter...
 Instead loop through and add each item (pair) to a list.
 If the right hand side value appears on the left somewhere else, add that pair to the list too.
 Keep checking this list to see if any right hand side value also appears on the left. If so... circular dependency!
+
+See below for this in action...
+
+a => x
+b => o
+c => h
+d => x
+e => z
+f => d
+g => h
+h => k
+i => v
+j => g
+k => m
+l => a
+m => 
+n => x
+o => q
+p => w
+q => g
+r => o
+s => u
+t => n
+u => c
+v => w
+w =>
+x => t
+y => d
+z => x
+
+
+Item 1 is a => x
+
+loop through each item to find one that has x on the left.... found it. Call this item ItemX
+what is the item to the right of ItemX? -> ... t
+
+store ItemX in culprits variable. -> "x=>t;"
+check if culprits contains this already .. it doesn't so continue
+
+loop through each item to find one that has t on the left.... found it. Call this item ItemX
+what is the item to the right of ItemX? -> ... n
+
+store ItemX in culprits variable. -> "x=>t;t=>n;"
+check if culprits contains this already  .. it doesn't so continue
+
+loop through each item to find one that has n on the left.... found it. Call this item ItemX
+what is the item to the right of ItemX? -> ... x
+
+store ItemX in culprits variable. -> "x=>t;t=>n;n=>x"
+check if culprits contains this already  .. it doesn't so continue
+
+loop through each item to find one that has x on the left.... found it. Call this item ItemX
+what is the item to the right of ItemX? -> ... t
+
+store ItemX in culprits variable. -> "x=>t;t=>n;n=>x;x=>t"
+check if culprits contains this already .. IT DOES! SO RAISE ERROR!
+

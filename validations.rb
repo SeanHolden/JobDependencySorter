@@ -33,43 +33,48 @@ module Validations
     end
   end
 
-  # As the title suggests. Checks for circular dependencies and raises error if true.
-  # How it works: for each "pair" of dependency rules, loop through all the dependency rules
-  # and check if the one on the right appears anywhere on the left. If so check that one
-  # in the same manner. Keep adding these to a list. If, in our list, the item on the right
-  # appears on the left of another item... then it is a circular dependency.
-  def validate_circular_dependencies
+  def validate_self_and_circle_dependencies
     @dependency_rules.each do |rule|
-      right = rule[1]
-      culprits=''
-      @dependency_rules.each do |r|
-        appears_on_left = r[0]
-        if right == appears_on_left
-          right = r[1]
-          culprits+="#{r[0]}=>#{r[1]};"
-        end
-        if culprits.include?("=>#{right}") && culprits.include?("#{right}=>")
-          raise CircularDependency.new, "Error: Jobs can’t have circular dependencies. (#{culprits})"
-        end
-      end
+      check_for_self_dependency(rule[0],rule[1])
+      check_if_job_declared(rule[1])
+      check_for_circular_dependency(rule)
     end
   end
 
-  # Checking that left hand side value does not equal right hand side value.
-  def validate_self_dependencies
-    @dependency_rules.each do |rule|
-      if rule[0] == rule[1]
-        raise SelfDependency.new, "Error: Jobs can’t depend on themselves."
-      elsif job_is_not_declared? rule[1]
-        raise UndeclaredJob.new, "Error: All jobs must be declared on the left hand side."
+  # Checks for circular dependencies and raises error if true.
+  # How it works: for each "pair" of dependency rules, loop through all the dependency rules
+  # and check if the one on the right appears anywhere on the left. If so check that one
+  # in the same manner. Keep adding these to a list. If, we get a repeat item in this list
+  # then we have a circle dependency. We can display the culprits that caused the error in our error message.
+  def check_for_circular_dependency(item,circle_check=[],culprits='')
+    rules_hash = @dependency_rules.to_h
+    if rules_hash[item[1]]
+      left,right = item[1],rules_hash[item[1]]
+      # As we loop, sometimes we find self dependencies quicker here than in the parent method,
+      # so might as well check for them and handle the error.
+      check_for_self_dependency(left,right)
+      circle_check << [ left, right ]
+      if circle_check.uniq.length != circle_check.length
+        raise CircularDependency.new, "Error: Jobs can’t have circular dependencies. (#{culprits})"
       end
+      culprits += "#{left}=>#{right};"
+      # Down the rabbit hole we go... finding all the "culprits" that could cause us an error.
+      check_for_circular_dependency([ left, right ], circle_check, culprits)
+    end
+  end
+
+  def check_for_self_dependency(left,right)
+    if left == right
+      raise SelfDependency.new, "Error: Jobs can’t depend on themselves."
     end
   end
 
   # All jobs that appear on the right (dependent on another job) must appear on the left
   # at some point. E.g. [ a=>z,b=>a ] should not be valid as z is not "declared".
-  def job_is_not_declared?(job)
-    !@sorted_jobs.include? job
+  def check_if_job_declared(job)
+    if !@sorted_jobs.include? job
+      raise UndeclaredJob.new, "Error: All jobs must be declared on the left hand side."
+    end
   end
 
 end

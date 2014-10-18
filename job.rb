@@ -10,8 +10,7 @@ class Job
     @unsorted_string = input
     validate_input
     format_string
-    validate_self_dependencies
-    validate_circular_dependencies
+    validate_self_and_circle_dependencies
   end
 
   # Sorts the list into the correct order using the rules that
@@ -48,6 +47,3 @@ class Job
   end
 
 end
-
-
-

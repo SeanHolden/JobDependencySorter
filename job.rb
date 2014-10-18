@@ -4,16 +4,15 @@ include Validations::CustomErrors
 class Job
   include Validations
 
-  # Ensure all exceptions are handled before any other methods can
-  # be called
+  # Ensure all exceptions are handled before anything else.
   def initialize(input='')
     @unsorted_string = input
     validate_input
     format_string
-    validate_self_and_circle_dependencies
+    validate_dependencies
   end
 
-  # Sorts the list into the correct order using the rules that
+  # Sort the list into the correct order using the rules that
   # are input by the user.
   def sort
     until order_is_valid? do
@@ -31,8 +30,11 @@ class Job
   private
 
   # Take the input string and format into processable arrays.
+  # Input can also be read from a file. (see spec/test.txt).
   def format_string
-    jobs = @unsorted_string.split(',')
+    jobs = @unsorted_string.split("\n").map{ |item| item.split(',') }
+    .flatten.map{ |item| item.strip }.reject{ |item| item.empty? }
+
     @sorted_jobs, @dependency_rules = [],[]
     jobs.each do |job|
       job_split = job.split('=>')
@@ -45,5 +47,4 @@ class Job
       end
     end
   end
-
 end

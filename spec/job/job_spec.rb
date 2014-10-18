@@ -32,9 +32,9 @@ describe Job do
         .to raise_error(ArgumentError, "Error: input must contain '=>' symbols to indicate dependencies.")
       end
 
-      it "returns appropriate error if nothing is entered as an argument" do
-        expect{ Job.new() }
-        .to raise_error(ArgumentError, "Error: An argument must be entered." )
+      it "returns empty array if nothing is entered as an argument" do
+        expect( Job.new().sort ).to eq []
+        expect( Job.new('').sort ).to eq []
       end
 
       it "returns error when a job is trying to depend on itself" do
@@ -94,6 +94,12 @@ describe Job do
     it "sorts jobs into correct order (test 7 - the whole alphabet)" do
       job = Job.new("a=>x,b=>o,c=>h,d=>x,e=>z,f=>d,g=>h,h=>k,i=>v,j=>g,k=>m,l=>a,m=>,n=>x,o=>q,p=>w,q=>g,r=>o,s=>u,t=>n,u=>c,v=>w,w=>,x=>,y=>d,z=>x")
       expect( job.sort ).to eq %w( x a m k h g q o b c d z e f w v i j l n p r u s t y )
+    end
+
+    it "can read in job dependencies from a file and output correct results" do
+      f = File.read('spec/test.txt')
+      job = Job.new(f)
+      expect( job.sort ).to eq %w( j a g f e i b h c d )
     end
     
   end

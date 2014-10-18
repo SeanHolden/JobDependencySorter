@@ -68,9 +68,9 @@ module Validations
 
   # Some custom errors that are more meaningful than simply StandardError.
   module CustomErrors
-    class CircularDependency < StandardError;end
-    class UndeclaredJob < StandardError;end
-    class SelfDependency < StandardError;end
+    CircularDependency = Class.new StandardError
+    UndeclaredJob = Class.new StandardError
+    SelfDependency = Class.new StandardError
   end
 
 end

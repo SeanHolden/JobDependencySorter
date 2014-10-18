@@ -1,6 +1,39 @@
 ###Code Challenge
 
-Imagine we have a list of jobs, each represented by a character. Because certain jobs must be done before others, a job may have a
-dependency on another job. For example, a may depend on b, meaning the final sequence of jobs should place b before a. If a has no
-dependency, the position of a in the final sequence does not matter.
+---
 
+Example of use:
+
+```ruby
+job = Job.new("a=>j,b=>i,c=>h,d=>g,e=>f,f=>g,g=>a,h=>b,i=>e,j=>")
+job.sort
+```
+
+Output
+
+```ruby
+["j","a","g","f","e","i","b","h","c","d"]
+```
+
+
+####Alternatively (for same result)
+
+```
+# test.txt
+a => j
+b => i
+c => h
+d => g
+e => f
+f => g
+g => a
+h => b
+i => e
+j =>
+```
+
+```ruby
+f = File.read('test.txt')
+job = Job.new(f)
+job.sort
+```
